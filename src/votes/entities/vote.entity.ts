@@ -3,7 +3,7 @@ import { Column, Entity, ObjectIdColumn } from 'typeorm';
 @Entity()
 export class Vote {
   @ObjectIdColumn()
-  id: number;
+  id: string;
 
   @Column()
   title: string;
