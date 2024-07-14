@@ -1,4 +1,10 @@
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  ObjectIdColumn,
+} from 'typeorm';
 
 @Entity()
 export class Vote {
@@ -34,4 +40,17 @@ export class Vote {
 
   @Column('simple-json')
   results: { [key: string]: number }; // 각 옵션에 대한 투표 수 저장
+
+  @BeforeInsert()
+  setCreationDate() {
+    const now = new Date();
+    this.createAt = now;
+    this.updatedAt = now;
+  }
+
+  @BeforeUpdate()
+  setUpdateDate() {
+    const now = new Date();
+    this.updatedAt = now;
+  }
 }

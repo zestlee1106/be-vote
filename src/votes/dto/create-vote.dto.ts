@@ -31,14 +31,6 @@ export class CreateVoteDto {
   @Type(() => Date)
   readonly endDate: Date;
 
-  @IsDate()
-  @Type(() => Date)
-  readonly createAt: Date;
-
-  @IsDate()
-  @Type(() => Date)
-  readonly updatedAt: Date;
-
   @IsString({ each: true })
   readonly votedIps: string[];
 
