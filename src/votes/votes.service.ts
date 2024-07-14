@@ -12,10 +12,12 @@ export class VotesService {
     private votesRepository: Repository<Vote>, // Repository<Vote> 가 Vote 엔티티와 관련된 DB 작업을 수행하는 메서드를 포함함
   ) {}
 
-  async create(createVoteDto: CreateVoteDto): Promise<Vote> {
-    // 1. DTO를 엔티티 인스턴스로 변환
+  async create(createVoteDto: CreateVoteDto, ip: string): Promise<Vote> {
+    // DTO를 엔티티 인스턴스로 변환
     const vote = this.votesRepository.create(createVoteDto);
-    // 2. 엔티티 인스턴스를 데이터베이스에 저장
+    // controller 로부터 받아온 ip 를 저장
+    vote.votedIps = vote.votedIps ? [...vote.votedIps, ip] : [ip];
+    // 엔티티 인스턴스를 데이터베이스에 저장
     return this.votesRepository.save(vote);
   }
 }
