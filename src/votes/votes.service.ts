@@ -20,4 +20,8 @@ export class VotesService {
     // 엔티티 인스턴스를 데이터베이스에 저장
     return this.votesRepository.save(vote);
   }
+
+  async getAll(): Promise<Vote[]> {
+    return this.votesRepository.find();
+  }
 }
