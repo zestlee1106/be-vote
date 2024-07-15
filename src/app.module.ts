@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { VotesModule } from './votes/votes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UuidMiddleware } from './common/middlewares/uuid/uuid.middleware';
 
 @Module({
   imports: [
@@ -16,4 +17,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UuidMiddleware).forRoutes('*');
+  }
+}
