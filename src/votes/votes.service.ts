@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Vote } from './entities/vote.entity';
 import { Repository } from 'typeorm';
 import { CreateVoteDto } from './dto/create-vote.dto';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class VotesService {
@@ -29,5 +30,11 @@ export class VotesService {
 
   async getAll(): Promise<Vote[]> {
     return this.votesRepository.find();
+  }
+
+  async getOne(id: string): Promise<Vote> {
+    const objectId = new ObjectId(id);
+    const vote = await this.votesRepository.findOneBy({ _id: objectId });
+    return vote;
   }
 }

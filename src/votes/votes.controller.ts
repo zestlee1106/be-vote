@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { Vote } from './entities/vote.entity';
@@ -21,5 +21,10 @@ export class VotesController {
   @Get()
   async getAll(): Promise<Vote[]> {
     return this.votesService.getAll();
+  }
+
+  @Get(':id')
+  async getOne(@Param('id') id: string): Promise<Vote> {
+    return this.votesService.getOne(id);
   }
 }
