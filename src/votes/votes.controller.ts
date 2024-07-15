@@ -3,6 +3,7 @@ import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { Vote } from './entities/vote.entity';
 import { IpAddress } from 'src/common/decorators/ip.decorator';
+import { CookieUuid } from 'src/common/decorators/cookie-uuid.decorator';
 
 @Controller('votes')
 export class VotesController {
@@ -12,8 +13,9 @@ export class VotesController {
   async create(
     @Body() createVoteDto: CreateVoteDto,
     @IpAddress() ip: string,
+    @CookieUuid() uuid: string,
   ): Promise<Vote> {
-    return this.votesService.create(createVoteDto, ip);
+    return this.votesService.create(createVoteDto, ip, uuid);
   }
 
   @Get()
