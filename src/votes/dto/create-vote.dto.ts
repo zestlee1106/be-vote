@@ -31,9 +31,6 @@ export class CreateVoteDto {
   @Type(() => Date)
   readonly endDate: Date;
 
-  @IsString({ each: true })
-  readonly votedCookieIds: string[];
-
   @ValidateNested()
   @Type(() => Result)
   readonly results: Record<string, number>;

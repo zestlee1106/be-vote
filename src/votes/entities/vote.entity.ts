@@ -36,6 +36,12 @@ export class Vote {
   votedIps: string[];
 
   @Column()
+  creatorIp: string;
+
+  @Column()
+  creatorUuid: string;
+
+  @Column()
   votedCookieIds: string[];
 
   @Column('simple-json')
