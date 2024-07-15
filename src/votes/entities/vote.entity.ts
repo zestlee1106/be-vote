@@ -1,15 +1,16 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   ObjectIdColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 @Entity()
 export class Vote {
   @ObjectIdColumn()
-  id: string;
+  _id: ObjectId;
 
   @Column()
   title: string;
@@ -56,7 +57,6 @@ export class Vote {
 
   @BeforeUpdate()
   setUpdateDate() {
-    const now = new Date();
-    this.updatedAt = now;
+    this.updatedAt = new Date();
   }
 }
