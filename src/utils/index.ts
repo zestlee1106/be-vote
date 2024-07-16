@@ -1,7 +1,7 @@
 export const getCookieByString = (cookieHeader: string) => {
-  const cookies = cookieHeader.split('; ').reduce(
+  const cookies = cookieHeader?.split('; ').reduce(
     (acc, cookie) => {
-      const [key, value] = cookie.split('=');
+      const [key, value] = cookie?.split('=');
       acc[key] = value;
       return acc;
     },

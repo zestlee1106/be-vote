@@ -10,7 +10,7 @@ export class UuidMiddleware implements NestMiddleware {
     const cookieHeaders = req.headers.cookie;
     const cookies = getCookieByString(cookieHeaders);
 
-    if (!cookies['uuid']) {
+    if (!cookies || !cookies['uuid']) {
       const uuid = uuidv4();
       res.cookie('uuid', uuid, {
         maxAge: 1000 * 60 * 60 * 24 * 365, // 1년동안 유효
