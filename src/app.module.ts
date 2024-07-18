@@ -2,6 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { VotesModule } from './votes/votes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UuidMiddleware } from './common/middlewares/uuid/uuid.middleware';
+import { VoteOptionsModule } from './vote-options/vote-options.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UuidMiddleware } from './common/middlewares/uuid/uuid.middleware';
       entities: [__dirname + '/**/*.entity{.ts,.js}'], // 엔티티 파일 경로 지정
     }),
     VotesModule,
+    VoteOptionsModule,
   ],
   controllers: [],
   providers: [],
