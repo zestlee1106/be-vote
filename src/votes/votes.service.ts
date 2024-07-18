@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vote } from './entities/vote.entity';
 import { Repository } from 'typeorm';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { ObjectId } from 'mongodb';
+import { UpdateVoteDto } from './dto/update-vote.dto';
 
 @Injectable()
 export class VotesService {
@@ -35,6 +36,26 @@ export class VotesService {
   async getOne(id: string): Promise<Vote> {
     const objectId = new ObjectId(id);
     const vote = await this.votesRepository.findOneBy({ _id: objectId });
+
+    if (!vote) {
+      throw new NotFoundException(`${id} 의 투표가 없습니다`);
+    }
+
     return vote;
+  }
+
+  async updateVote(id: string, updateVoteDto: UpdateVoteDto): Promise<Vote> {
+    const vote = await this.getOne(id);
+
+    const updatedVote = {
+      ...vote,
+      ...updateVoteDto,
+    };
+    delete updatedVote['_id'];
+
+    const objectId = new ObjectId(id);
+    this.votesRepository.update(objectId, updatedVote);
+
+    return this.getOne(id);
   }
 }
