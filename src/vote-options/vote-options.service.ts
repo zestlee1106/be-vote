@@ -12,12 +12,12 @@ export class VoteOptionsService {
   ) {}
 
   async create(createVoteOptionDto: CreateVoteOptionsDto, voteId: ObjectId) {
-    const voteIdObjectIdType = new ObjectId(voteId);
-
     const option = this.voteOptionsRepository.create({
       option: createVoteOptionDto.option,
-      voteId: voteIdObjectIdType,
+      voteId: voteId,
     });
-    return this.voteOptionsRepository.save(option);
+
+    const savedOption = this.voteOptionsRepository.save(option);
+    return savedOption;
   }
 }

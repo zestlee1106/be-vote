@@ -30,11 +30,10 @@ export class VotesService {
       endDate,
       creatorIp: ip,
       creatorUuid: uuid,
+      votedIps: [],
     });
 
     const savedVote = await this.votesRepository.save(vote);
-
-    console.log('🧡💛💙 영우의 로그 => savedVote', savedVote);
 
     const voteOptions = await Promise.all(
       options.map((option) =>
