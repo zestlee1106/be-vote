@@ -13,6 +13,8 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors();
+
   const swaggerConfig = new DocumentBuilder()
     .setTitle('투표 시스템 스웨거')
     .setDescription('스웨거 입니다')
