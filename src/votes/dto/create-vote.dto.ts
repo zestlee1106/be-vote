@@ -1,18 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsDate,
-  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
-
-class Result {
-  @IsNumber()
-  @ApiProperty({ example: 10, description: '투표 결과 값' })
-  value: number;
-}
+import { CreateVoteOptionsDto } from 'src/vote-options/dto/create-vote-options.dto';
 
 export class CreateVoteDto {
   @IsString()
@@ -27,13 +23,15 @@ export class CreateVoteDto {
   })
   readonly description: string;
 
-  @IsString({ each: true })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => CreateVoteOptionsDto)
   @ApiProperty({
-    example: ['옵션 1', '옵션 2'],
+    type: () => [CreateVoteOptionsDto],
     description: '투표 옵션의 목록',
-    type: [String],
   })
-  readonly options: string[];
+  readonly options: CreateVoteOptionsDto[];
 
   @IsDate()
   @Type(() => Date) // transformer 가 string 을 Date 객체로 변환해 준다
@@ -50,14 +48,4 @@ export class CreateVoteDto {
     description: '투표 종료 날짜',
   })
   readonly endDate: Date;
-
-  @ValidateNested()
-  @Type(() => Result)
-  @ApiProperty({
-    example: { 'Option 1': 10, 'Option 2': 5 },
-    description: '투표 결과를 저장하는 객체',
-    type: 'object',
-    additionalProperties: { type: 'number' },
-  })
-  readonly results: Record<string, number>;
 }

@@ -3,8 +3,8 @@ import {
   Column,
   Entity,
   ObjectIdColumn,
-  BeforeInsert,
-  BeforeUpdate,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ObjectId } from 'mongodb';
 
@@ -30,13 +30,6 @@ export class Vote {
 
   @Column()
   @ApiProperty({
-    example: ['Option 1', 'Option 2'],
-    description: 'The options for the vote',
-  })
-  options: string[];
-
-  @Column()
-  @ApiProperty({
     example: '2024-07-01T00:00:00.000Z',
     description: 'The start date of the vote',
   })
@@ -49,14 +42,14 @@ export class Vote {
   })
   endDate: Date;
 
-  @Column()
+  @CreateDateColumn()
   @ApiProperty({
     example: '2024-07-01T00:00:00.000Z',
     description: 'The creation date of the vote',
   })
   createAt: Date;
 
-  @Column()
+  @UpdateDateColumn()
   @ApiProperty({
     example: '2024-07-01T00:00:00.000Z',
     description: 'The last update date of the vote',
@@ -84,29 +77,7 @@ export class Vote {
   })
   creatorUuid: string;
 
-  @Column()
-  @ApiProperty({
-    example: ['uuid1', 'uuid2'],
-    description: 'The UUIDs of voters',
-  })
-  votedCookieIds: string[];
-
-  @Column('simple-json')
-  @ApiProperty({
-    example: { 'Option 1': 10, 'Option 2': 5 },
-    description: 'The results of the vote',
-  })
-  results: { [key: string]: number }; // 각 옵션에 대한 투표 수 저장
-
-  @BeforeInsert()
-  setCreationDate() {
-    const now = new Date();
-    this.createAt = now;
-    this.updatedAt = now;
-  }
-
-  @BeforeUpdate()
-  setUpdateDate() {
-    this.updatedAt = new Date();
-  }
+  @Column('array')
+  @ApiProperty({ type: () => [String], description: '투표의 옵션 ID 목록' })
+  options: ObjectId[];
 }

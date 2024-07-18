@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ObjectId } from 'mongodb';
-import { Vote } from 'src/votes/entities/vote.entity';
-import { Column, Entity, ObjectIdColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, ObjectIdColumn, BeforeInsert } from 'typeorm';
 
 @Entity()
 export class VoteOptions {
@@ -26,11 +25,15 @@ export class VoteOptions {
   })
   count: number;
 
-  @ManyToOne(() => Vote, (vote) => vote.options)
+  @Column()
   @ApiProperty({
-    type: () => Vote,
-    example: '669523724633b96231437dcb',
+    type: () => String,
     description: '해당 옵션이 맵핑되어있는 투표',
   })
-  vote: Vote;
+  voteId: ObjectId;
+
+  @BeforeInsert()
+  setVoteOptionsCount() {
+    this.count = 0;
+  }
 }
