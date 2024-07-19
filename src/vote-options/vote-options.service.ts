@@ -20,4 +20,12 @@ export class VoteOptionsService {
     const savedOption = this.voteOptionsRepository.save(option);
     return savedOption;
   }
+
+  async getByVoteId(voteId: ObjectId) {
+    const voteOptions = this.voteOptionsRepository.find({
+      where: { voteId: voteId },
+    });
+
+    return voteOptions;
+  }
 }

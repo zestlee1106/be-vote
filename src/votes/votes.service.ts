@@ -6,6 +6,7 @@ import { CreateVoteDto } from './dto/create-vote.dto';
 import { ObjectId } from 'mongodb';
 // import { UpdateVoteDto } from './dto/update-vote.dto';
 import { VoteOptionsService } from 'src/vote-options/vote-options.service';
+import { VoteOptions } from 'src/vote-options/entities/vote-options.entity';
 
 @Injectable()
 export class VotesService {
@@ -30,18 +31,15 @@ export class VotesService {
       endDate,
       creatorIp: ip,
       creatorUuid: uuid,
-      votedIps: [],
     });
 
     const savedVote = await this.votesRepository.save(vote);
 
-    const voteOptions = await Promise.all(
+    await Promise.all(
       options.map((option) =>
         this.votesOptionsService.create(option, savedVote._id),
       ),
     );
-
-    savedVote.options = voteOptions.map((option) => option._id);
 
     await this.votesRepository.save(savedVote);
 
@@ -55,7 +53,7 @@ export class VotesService {
     return this.votesRepository.find();
   }
 
-  async getOne(id: string): Promise<Vote> {
+  async getOne(id: string): Promise<Vote & { options: VoteOptions[] }> {
     const objectId = new ObjectId(id);
     const vote = await this.votesRepository.findOneBy({ _id: objectId });
 
@@ -63,7 +61,9 @@ export class VotesService {
       throw new NotFoundException(`${id} 의 투표가 없습니다`);
     }
 
-    return vote;
+    const options = await this.votesOptionsService.getByVoteId(objectId);
+
+    return { ...vote, options };
   }
 
   // async updateVote(id: string, updateVoteDto: UpdateVoteDto): Promise<Vote> {

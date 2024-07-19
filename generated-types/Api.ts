@@ -9,6 +9,8 @@
  * ---------------------------------------------------------------
  */
 
+export type CreateVoteOptionsDto = object;
+
 export interface CreateVoteDto {
   /**
    * 투표의 제목
@@ -20,11 +22,8 @@ export interface CreateVoteDto {
    * @example "투표 설명"
    */
   description: string;
-  /**
-   * 투표 옵션의 목록
-   * @example ["옵션 1","옵션 2"]
-   */
-  options: string[];
+  /** 투표 옵션의 목록 */
+  options: CreateVoteOptionsDto[];
   /**
    * 투표 시작 날짜
    * @format date-time
@@ -37,11 +36,6 @@ export interface CreateVoteDto {
    * @example "2024-07-15T00:00:00.000Z"
    */
   endDate: string;
-  /**
-   * 투표 결과를 저장하는 객체
-   * @example {"Option 1":10,"Option 2":5}
-   */
-  results: Record<string, number>;
 }
 
 export type ObjectId = object;
@@ -62,11 +56,6 @@ export interface Vote {
    * @example "Vote description"
    */
   description: string;
-  /**
-   * The options for the vote
-   * @example ["Option 1","Option 2"]
-   */
-  options: string[];
   /**
    * The start date of the vote
    * @format date-time
@@ -106,16 +95,6 @@ export interface Vote {
    * @example "5cc8a093-85fa-4da0-9111-313b53e4b924"
    */
   creatorUuid: string;
-  /**
-   * The UUIDs of voters
-   * @example ["uuid1","uuid2"]
-   */
-  votedCookieIds: string[];
-  /**
-   * The results of the vote
-   * @example {"Option 1":10,"Option 2":5}
-   */
-  results: object;
 }
 
 export type QueryParamsType = Record<string | number, any>;

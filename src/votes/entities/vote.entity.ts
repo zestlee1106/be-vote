@@ -76,8 +76,4 @@ export class Vote {
     description: 'The UUID of the vote creator',
   })
   creatorUuid: string;
-
-  @Column('array')
-  @ApiProperty({ type: () => [String], description: '투표의 옵션 ID 목록' })
-  options: ObjectId[];
 }
