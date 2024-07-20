@@ -18,6 +18,7 @@ import {
   ApiParam,
   ApiBody,
 } from '@nestjs/swagger';
+import { VoteResponseDto } from './dto/vote-response.dto';
 // import { UpdateVoteDto } from './dto/update-vote.dto';
 
 @ApiTags('votes')
@@ -37,7 +38,7 @@ export class VotesController {
     @Body() createVoteDto: CreateVoteDto,
     @IpAddress() ip: string,
     @CookieUuid() uuid: string,
-  ): Promise<Vote> {
+  ): Promise<VoteResponseDto> {
     return this.votesService.create(createVoteDto, ip, uuid);
   }
 

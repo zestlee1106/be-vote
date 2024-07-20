@@ -7,6 +7,7 @@ import { ObjectId } from 'mongodb';
 // import { UpdateVoteDto } from './dto/update-vote.dto';
 import { VoteOptionsService } from 'src/vote-options/vote-options.service';
 import { VoteOptions } from 'src/vote-options/entities/vote-options.entity';
+import { VoteResponseDto } from './dto/vote-response.dto';
 
 @Injectable()
 export class VotesService {
@@ -21,10 +22,10 @@ export class VotesService {
     createVoteDto: CreateVoteDto,
     ip: string,
     uuid: string,
-  ): Promise<Vote> {
+  ): Promise<VoteResponseDto> {
     const { title, description, startDate, endDate, options } = createVoteDto;
 
-    const vote = this.votesRepository.create({
+    const voteEntity = this.votesRepository.create({
       title,
       description,
       startDate,
@@ -33,9 +34,9 @@ export class VotesService {
       creatorUuid: uuid,
     });
 
-    const savedVote = await this.votesRepository.save(vote);
+    const savedVote = await this.votesRepository.save(voteEntity);
 
-    await Promise.all(
+    const savedOptions = await Promise.all(
       options.map((option) =>
         this.votesOptionsService.create(option, savedVote._id),
       ),
@@ -43,10 +44,9 @@ export class VotesService {
 
     await this.votesRepository.save(savedVote);
 
-    return this.votesRepository.findOne({
-      where: { _id: savedVote._id },
-      relations: ['options'],
-    });
+    const vote = await this.votesRepository.findOneBy({ _id: savedVote._id });
+
+    return { ...vote, options: savedOptions };
   }
 
   async getAll(): Promise<Vote[]> {
