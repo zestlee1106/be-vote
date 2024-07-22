@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  // Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { Vote } from './entities/vote.entity';
@@ -19,7 +12,6 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { VoteResponseDto } from './dto/vote-response.dto';
-// import { UpdateVoteDto } from './dto/update-vote.dto';
 
 @ApiTags('votes')
 @Controller('votes')
@@ -73,12 +65,12 @@ export class VotesController {
     return this.votesService.getOne(id);
   }
 
-  // @Patch(':id')
-  // @ApiOperation({ summary: '투표 수정인데 일단은 투표하기 때만 쓰이는' })
-  // async patchVote(
-  //   @Param('id') id: string,
-  //   @Body() updateVoteDto: UpdateVoteDto,
-  // ): Promise<Vote> {
-  //   return this.votesService.updateVote(id, updateVoteDto);
-  // }
+  @Post(':vote_id/options/:option_id')
+  async vote(
+    @Param('vote_id') voteId: string,
+    @Param('option_id') optionId: string,
+    @CookieUuid() uuid: string,
+  ) {
+    return this.votesService.vote(voteId, optionId, uuid);
+  }
 }

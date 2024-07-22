@@ -8,6 +8,7 @@ import { ObjectId } from 'mongodb';
 import { VoteOptionsService } from 'src/vote-options/vote-options.service';
 import { VoteOptions } from 'src/vote-options/entities/vote-options.entity';
 import { VoteResponseDto } from './dto/vote-response.dto';
+import { VoteResultsService } from 'src/vote-results/vote-results.service';
 
 @Injectable()
 export class VotesService {
@@ -16,6 +17,7 @@ export class VotesService {
     @InjectRepository(Vote) // Vote 엔티티와 연동된 리포지토리를 주입하기 위해 사용
     private votesRepository: Repository<Vote>, // Repository<Vote> 가 Vote 엔티티와 관련된 DB 작업을 수행하는 메서드를 포함함
     private votesOptionsService: VoteOptionsService,
+    private votesResultService: VoteResultsService,
   ) {}
 
   async create(
@@ -64,6 +66,10 @@ export class VotesService {
     const options = await this.votesOptionsService.getByVoteId(objectId);
 
     return { ...vote, options };
+  }
+
+  async vote(voteId: string, optionId: string, uuid: string) {
+    return this.votesResultService.create(voteId, optionId, uuid);
   }
 
   // async updateVote(id: string, updateVoteDto: UpdateVoteDto): Promise<Vote> {

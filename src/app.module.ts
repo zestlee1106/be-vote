@@ -3,6 +3,7 @@ import { VotesModule } from './votes/votes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UuidMiddleware } from './common/middlewares/uuid/uuid.middleware';
 import { VoteOptionsModule } from './vote-options/vote-options.module';
+import { VoteResultsModule } from './vote-results/vote-results.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { VoteOptionsModule } from './vote-options/vote-options.module';
     }),
     VotesModule,
     VoteOptionsModule,
+    VoteResultsModule,
   ],
   controllers: [],
   providers: [],
