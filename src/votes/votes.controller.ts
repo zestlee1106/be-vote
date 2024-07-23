@@ -73,4 +73,9 @@ export class VotesController {
   ) {
     return this.votesService.vote(voteId, optionId, uuid);
   }
+
+  @Get(':id/results')
+  async getResults(@Param('id') id: string) {
+    return this.votesService.getResult(id);
+  }
 }

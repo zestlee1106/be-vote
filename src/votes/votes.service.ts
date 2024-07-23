@@ -4,11 +4,11 @@ import { Vote } from './entities/vote.entity';
 import { Repository } from 'typeorm';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { ObjectId } from 'mongodb';
-// import { UpdateVoteDto } from './dto/update-vote.dto';
 import { VoteOptionsService } from 'src/vote-options/vote-options.service';
 import { VoteOptions } from 'src/vote-options/entities/vote-options.entity';
 import { VoteResponseDto } from './dto/vote-response.dto';
 import { VoteResultsService } from 'src/vote-results/vote-results.service';
+import { VoteResult } from 'src/vote-results/entities/vote-results.entity';
 
 @Injectable()
 export class VotesService {
@@ -18,6 +18,10 @@ export class VotesService {
     private votesRepository: Repository<Vote>, // Repository<Vote> 가 Vote 엔티티와 관련된 DB 작업을 수행하는 메서드를 포함함
     private votesOptionsService: VoteOptionsService,
     private votesResultService: VoteResultsService,
+    @InjectRepository(VoteResult)
+    private votesResultRepository: Repository<VoteResult>,
+    @InjectRepository(VoteOptions)
+    private votesOptionRepository: Repository<VoteOptions>,
   ) {}
 
   async create(
@@ -72,18 +76,33 @@ export class VotesService {
     return this.votesResultService.create(voteId, optionId, uuid);
   }
 
-  // async updateVote(id: string, updateVoteDto: UpdateVoteDto): Promise<Vote> {
-  //   const vote = await this.getOne(id);
+  async getResult(voteId: string) {
+    const objectId = new ObjectId(voteId);
 
-  //   const updatedVote = {
-  //     ...vote,
-  //     ...updateVoteDto,
-  //   };
-  //   delete updatedVote['_id'];
+    const vote = await this.votesRepository.findOneBy({
+      _id: objectId,
+    });
 
-  //   const objectId = new ObjectId(id);
-  //   this.votesRepository.update(objectId, updatedVote);
+    const votesOptions = await this.votesOptionRepository.find({
+      where: { voteId: objectId },
+    });
 
-  //   return this.getOne(id);
-  // }
+    const options = await Promise.all(
+      votesOptions.map(async (option) => {
+        const count = await this.votesResultRepository.find({
+          where: { optionId: new ObjectId(option._id) },
+        });
+
+        return {
+          ...option,
+          count: count.length,
+        };
+      }),
+    );
+
+    return {
+      ...vote,
+      options,
+    };
+  }
 }

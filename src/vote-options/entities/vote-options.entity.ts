@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ObjectId } from 'mongodb';
-import { Column, Entity, ObjectIdColumn, BeforeInsert } from 'typeorm';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
 
 @Entity()
 export class VoteOptions {
@@ -20,20 +20,8 @@ export class VoteOptions {
 
   @Column()
   @ApiProperty({
-    example: 3,
-    description: '해당 옵션이 투표된 카운트',
-  })
-  count: number;
-
-  @Column()
-  @ApiProperty({
     type: () => String,
     description: '해당 옵션이 맵핑되어있는 투표',
   })
   voteId: ObjectId;
-
-  @BeforeInsert()
-  setVoteOptionsCount() {
-    this.count = 0;
-  }
 }
