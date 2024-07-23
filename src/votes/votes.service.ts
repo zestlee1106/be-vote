@@ -87,15 +87,19 @@ export class VotesService {
       where: { voteId: objectId },
     });
 
+    let totalVoteCount = 0;
+
     const options = await Promise.all(
       votesOptions.map(async (option) => {
-        const count = await this.votesResultRepository.find({
+        const results = await this.votesResultRepository.find({
           where: { optionId: new ObjectId(option._id) },
         });
+        const count = results.length;
+        totalVoteCount = totalVoteCount + count;
 
         return {
           ...option,
-          count: count.length,
+          count,
         };
       }),
     );
@@ -103,6 +107,7 @@ export class VotesService {
     return {
       ...vote,
       options,
+      totalVoteCount,
     };
   }
 }
