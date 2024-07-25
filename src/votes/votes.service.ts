@@ -16,12 +16,12 @@ export class VotesService {
     // 의존성 주입을 위해 생성자 추가
     @InjectRepository(Vote) // Vote 엔티티와 연동된 리포지토리를 주입하기 위해 사용
     private votesRepository: Repository<Vote>, // Repository<Vote> 가 Vote 엔티티와 관련된 DB 작업을 수행하는 메서드를 포함함
-    private votesOptionsService: VoteOptionsService,
-    private votesResultService: VoteResultsService,
     @InjectRepository(VoteResult)
     private votesResultRepository: Repository<VoteResult>,
     @InjectRepository(VoteOptions)
     private votesOptionRepository: Repository<VoteOptions>,
+    private votesOptionsService: VoteOptionsService,
+    private votesResultService: VoteResultsService,
   ) {}
 
   async create(
@@ -47,8 +47,6 @@ export class VotesService {
         this.votesOptionsService.create(option, savedVote._id),
       ),
     );
-
-    await this.votesRepository.save(savedVote);
 
     const vote = await this.votesRepository.findOneBy({ _id: savedVote._id });
 
