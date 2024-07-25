@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vote } from './entities/vote.entity';
 import { Repository } from 'typeorm';
@@ -57,12 +61,26 @@ export class VotesService {
     return this.votesRepository.find();
   }
 
-  async getOne(id: string): Promise<Vote & { options: VoteOptions[] }> {
+  async getOne(
+    id: string,
+    uuid: string,
+  ): Promise<Vote & { options: VoteOptions[] }> {
     const objectId = new ObjectId(id);
     const vote = await this.votesRepository.findOneBy({ _id: objectId });
 
     if (!vote) {
       throw new NotFoundException(`${id} 의 투표가 없습니다`);
+    }
+
+    const voteResult = await this.votesResultRepository.findOne({
+      where: {
+        voteId: objectId,
+        votedUuid: uuid,
+      },
+    });
+
+    if (voteResult) {
+      throw new ConflictException('이미 투표하였습니다.');
     }
 
     const options = await this.votesOptionsService.getByVoteId(objectId);

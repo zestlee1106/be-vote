@@ -61,8 +61,11 @@ export class VotesController {
     status: 404,
     description: 'id 로 조회된 투표가 없을 때',
   })
-  async getOne(@Param('id') id: string): Promise<Vote> {
-    return this.votesService.getOne(id);
+  async getOne(
+    @Param('id') id: string,
+    @CookieUuid() uuid: string,
+  ): Promise<Vote> {
+    return this.votesService.getOne(id, uuid);
   }
 
   @Post(':vote_id/options/:option_id')
