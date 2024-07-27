@@ -33,7 +33,14 @@ export class VotesService {
     ip: string,
     uuid: string,
   ): Promise<VoteResponseDto> {
-    const { title, description, startDate, endDate, options } = createVoteDto;
+    const {
+      title,
+      description,
+      startDate,
+      endDate,
+      options,
+      isDuplicateVotingAllowed,
+    } = createVoteDto;
 
     const voteEntity = this.votesRepository.create({
       title,
@@ -42,6 +49,7 @@ export class VotesService {
       endDate,
       creatorIp: ip,
       creatorUuid: uuid,
+      isDuplicateVotingAllowed,
     });
 
     const savedVote = await this.votesRepository.save(voteEntity);

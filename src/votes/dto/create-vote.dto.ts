@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsArray,
+  IsBoolean,
   IsDate,
   IsOptional,
   IsString,
@@ -48,4 +49,12 @@ export class CreateVoteDto {
     description: '투표 종료 날짜',
   })
   readonly endDate: Date;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    example: true,
+    description: '중복투표 가능 여부',
+  })
+  readonly isDuplicateVotingAllowed: boolean;
 }
