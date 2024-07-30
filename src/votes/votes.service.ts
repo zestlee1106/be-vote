@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { VoteOptions } from 'src/vote-options/entities/vote-options.entity';
 import { VoteResponseDto } from './dto/vote-response.dto';
 import { VoteResultsService } from 'src/vote-results/vote-results.service';
 import { VoteResult } from 'src/vote-results/entities/vote-results.entity';
+import { isAfter } from 'date-fns';
 
 @Injectable()
 export class VotesService {
@@ -78,6 +80,12 @@ export class VotesService {
 
     if (!vote) {
       throw new NotFoundException(`${id} 의 투표가 없습니다`);
+    }
+
+    const today = new Date();
+
+    if (isAfter(today, vote.endDate)) {
+      throw new ForbiddenException('이미 마감된 투표입니다');
     }
 
     const voteResult = await this.votesResultRepository.findOne({
