@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +9,7 @@ import { VoteResult } from './entities/vote-results.entity';
 import { Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { Vote } from 'src/votes/entities/vote.entity';
+import { isAfter } from 'date-fns';
 
 @Injectable()
 export class VoteResultsService {
@@ -26,6 +28,12 @@ export class VoteResultsService {
 
     if (!vote.isDuplicateVotingAllowed && optionIdArray.length > 1) {
       throw new BadRequestException('중복 투표가 불가한 투표입니다');
+    }
+
+    const today = new Date();
+
+    if (isAfter(today, vote.endDate)) {
+      throw new ForbiddenException('이미 마감된 투표입니다');
     }
 
     const voteResult = await this.voteResultRepository.findOne({
